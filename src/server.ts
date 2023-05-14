@@ -1,18 +1,16 @@
 import fastify from 'fastify'
-import { knex } from './database'
 import { env } from './env'
+import { transactionsRoutes } from './routes/transactions'
 
-const server = fastify()
+const app = fastify()
 
-// GET, POST, PUT, DELETE
+// Register puxa as rotas programadas em outro lugar. A ordem dessa importação é importante!
 
-server.get('/hello/list_all', async () => {
-  const transactions = await knex('transactions').select('*')
-
-  return transactions
+app.register(transactionsRoutes, {
+  prefix: 'transactions',
 })
 
-server
+app
   .listen({
     port: env.PORT,
   })
