@@ -5,10 +5,10 @@ const server = fastify()
 
 // GET, POST, PUT, DELETE
 
-server.get('/hello', async () => {
-  const tables = await knex('sqlite_schema').select('*')
+server.get('/hello/list_all', async () => {
+  const transactions = await knex('transactions').select('*')
 
-  return tables
+  return transactions
 })
 
 server
