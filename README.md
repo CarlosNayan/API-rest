@@ -1,7 +1,7 @@
 # RF
 
 - [X] O Usuário deve poder criar uma nova transação;
-- [ ] O usuário deve poder obter um resumo da sua conta;
+- [X] O usuário deve poder obter um resumo da sua conta;
 - [X] O usuário deve poder listar todas as transações que ja ocorreram;
 - [X] O usuário deve poder visualizar uma informação única
 
