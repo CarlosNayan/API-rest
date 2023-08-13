@@ -5,78 +5,63 @@ import { knex } from "../database";
 import { checkSessionIdExists } from "../middleware/check-session-id-exists";
 
 export async function transactionsRoutes(app: FastifyInstance) {
-  app.get("/", { preHandler: [checkSessionIdExists] }, async (req, reply) => {
-    const { sessionId } = req.cookies;
+	app.get("/", { preHandler: [checkSessionIdExists] }, async (req /* reply */) => {
+		const { sessionId } = req.cookies;
 
-    const transactions = await knex("transactions")
-      .where("session_id", sessionId)
-      .select();
+		const transactions = await knex("transactions").where("session_id", sessionId).select();
 
-    return { transactions };
-  });
+		return { transactions };
+	});
 
-  app.get(
-    "/:id",
-    { preHandler: [checkSessionIdExists] },
-    async (req, reply) => {
-      const getTransactionsParamsSchema = z.object({
-        id: z.string().uuid(),
-      });
+	app.get("/:id", { preHandler: [checkSessionIdExists] }, async (req /* reply */) => {
+		const getTransactionsParamsSchema = z.object({
+			id: z.string().uuid()
+		});
 
-      const { id } = getTransactionsParamsSchema.parse(req.params);
+		const { id } = getTransactionsParamsSchema.parse(req.params);
 
-      const { sessionId } = req.cookies;
+		const { sessionId } = req.cookies;
 
-      const transaction = await knex("transactions")
-        .where({ session_id: sessionId, id })
-        .first();
+		const transaction = await knex("transactions").where({ session_id: sessionId, id }).first();
 
-      return { transaction };
-    }
-  );
+		return { transaction };
+	});
 
-  app.get(
-    "/summary",
-    { preHandler: [checkSessionIdExists] },
-    async (req, reply) => {
-      const { sessionId } = req.cookies;
+	app.get("/summary", { preHandler: [checkSessionIdExists] }, async (req /* reply */) => {
+		const { sessionId } = req.cookies;
 
-      const summary = await knex("transactions")
-        .where("session_id", sessionId)
-        .sum("amount", { as: "Amount" })
-        .first();
+		const summary = await knex("transactions").where("session_id", sessionId).sum("amount", { as: "Amount" }).first();
 
-      return { summary };
-    }
-  );
+		return { summary };
+	});
 
-  app.post("/", async (req, reply) => {
-    const createTransactionBodySchema = z.object({
-      title: z.string(),
-      amount: z.number(),
-      type: z.enum(["credit", "debit"]),
-    });
+	app.post("/", async (req, reply) => {
+		const createTransactionBodySchema = z.object({
+			title: z.string(),
+			amount: z.number(),
+			type: z.enum(["credit", "debit"])
+		});
 
-    const { title, amount, type } = createTransactionBodySchema.parse(req.body);
+		const { title, amount, type } = createTransactionBodySchema.parse(req.body);
 
-    let sessionId = req.cookies.sessionId;
+		let sessionId = req.cookies.sessionId;
 
-    if (!sessionId) {
-      sessionId = randomUUID();
+		if (!sessionId) {
+			sessionId = randomUUID();
 
-      reply.cookie("sessionId", sessionId, {
-        path: "/",
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      });
-    }
+			reply.cookie("sessionId", sessionId, {
+				path: "/",
+				maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+			});
+		}
 
-    await knex("transactions").insert({
-      id: randomUUID(),
-      title,
-      amount: type === "credit" ? amount : amount * -1,
-      session_id: sessionId,
-    });
+		await knex("transactions").insert({
+			id: randomUUID(),
+			title,
+			amount: type === "credit" ? amount : amount * -1,
+			session_id: sessionId
+		});
 
-    return reply.status(201).send("Transação feita com sucesso!");
-  });
+		return reply.status(201).send("Transação feita com sucesso!");
+	});
 }

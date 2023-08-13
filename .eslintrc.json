@@ -24,11 +24,11 @@
       ],
       "linebreak-style": [
         "error",
-        "LF"
+        "unix"
       ],
       "quotes": [
         "error",
-        "single"
+        "double"
       ],
       "semi": [
         "error",
