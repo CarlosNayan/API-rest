@@ -1,6 +1,6 @@
 Instruções para uso da aplicação:
 
-- Necessário criar um aquivo .env como o modelo fornecido
+- Necessário criar um aquivo ".env" como o modelo fornecido
 
 - Ao tentar rodar as migrations do projeto, pode ser que você se depare com um log de erro como o seguinte exemplo:
 
@@ -13,7 +13,11 @@ Instruções para uso da aplicação:
 
   Para corrigir esse problema, foi criado um script em "package.json". rode "npm run knex -- COMANDO A SER USADO"
 
+- Para rodar o projeto, utilize o node na versão 18
+
 - Utilizado para formatação automática o eslint e o prettier para facilitar a manutenção e a leitura do código
+
+- Implementada uma dependência para conversão de código TS em JS. adicionado um script "package.json" para melhor funcionamento. Para deploy, rodar "npm run build" antes
 
 # Requisitos funcionais
 
